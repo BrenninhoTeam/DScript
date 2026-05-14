@@ -3,6 +3,7 @@ package;
 import dscript.Interpreter;
 import dscript.Environment;
 import dscript.Value;
+import dscript.ValueExt;
 import dscript.Error;
 import sys.io.File;
 import sys.FileSystem;
@@ -129,6 +130,10 @@ class Main {
 		Sys.println("  help             Show this help message");
 	}
 
+	// ─────────────────────────────────────────────────────────────
+	//  Registration
+	// ─────────────────────────────────────────────────────────────
+
 	static function registerAll(i:Interpreter):Void {
 		registerIO(i);
 		registerMath(i);
@@ -139,6 +144,10 @@ class Main {
 		registerSys(i);
 		registerType(i);
 	}
+
+	// ─────────────────────────────────────────────────────────────
+	//  std.io
+	// ─────────────────────────────────────────────────────────────
 
 	static function registerIO(i:Interpreter):Void {
 		i.bind("println", function(args:Array<Value>) {
@@ -195,6 +204,10 @@ class Main {
 			return Value.Null;
 		});
 	}
+
+	// ─────────────────────────────────────────────────────────────
+	//  std.math
+	// ─────────────────────────────────────────────────────────────
 
 	static function registerMath(i:Interpreter):Void {
 		i.bind("abs", function(args:Array<Value>) {
@@ -275,6 +288,10 @@ class Main {
 		i.bind("INF", Value.Number(Math.POSITIVE_INFINITY));
 		i.bind("NAN", Value.Number(Math.NaN));
 	}
+
+	// ─────────────────────────────────────────────────────────────
+	//  std.string
+	// ─────────────────────────────────────────────────────────────
 
 	static function registerString(i:Interpreter):Void {
 		i.bind("strLen", function(args:Array<Value>) {
@@ -385,6 +402,10 @@ class Main {
 			return Value.String(buf.toString());
 		});
 	}
+
+	// ─────────────────────────────────────────────────────────────
+	//  std.array
+	// ─────────────────────────────────────────────────────────────
 
 	static function registerArray(i:Interpreter):Void {
 		i.bind("len", function(args:Array<Value>) {
@@ -535,6 +556,10 @@ class Main {
 		});
 	}
 
+	// ─────────────────────────────────────────────────────────────
+	//  std.map
+	// ─────────────────────────────────────────────────────────────
+
 	static function registerMap(i:Interpreter):Void {
 		i.bind("mapGet", function(args:Array<Value>) {
 			requireArgs("mapGet", args, 2);
@@ -587,13 +612,17 @@ class Main {
 		});
 	}
 
+	// ─────────────────────────────────────────────────────────────
+	//  std.json
+	// ─────────────────────────────────────────────────────────────
+
 	static function registerJson(i:Interpreter):Void {
 		i.bind("jsonParse", function(args:Array<Value>) {
 			requireArgs("jsonParse", args, 1);
 			var raw = expectString("jsonParse", args[0]);
 			try {
 				var parsed = haxe.Json.parse(raw);
-				return Value.fromDynamic(parsed);
+				return ValueExt.fromDynamic(parsed);
 			} catch (e:Dynamic) {
 				throw new DScriptError("jsonParse: invalid JSON — " + Std.string(e));
 			}
@@ -604,6 +633,10 @@ class Main {
 			return Value.String(haxe.Json.stringify(args[0].toDynamic()));
 		});
 	}
+
+	// ─────────────────────────────────────────────────────────────
+	//  std.sys
+	// ─────────────────────────────────────────────────────────────
 
 	static function registerSys(i:Interpreter):Void {
 		i.bind("time", function(args:Array<Value>) {
@@ -638,6 +671,10 @@ class Main {
 			return Value.String(Sys.getCwd());
 		});
 	}
+
+	// ─────────────────────────────────────────────────────────────
+	//  std.type
+	// ─────────────────────────────────────────────────────────────
 
 	static function registerType(i:Interpreter):Void {
 		i.bind("typeOf", function(args:Array<Value>) {
@@ -698,6 +735,10 @@ class Main {
 			return Value.Bool(args[0].isTruthy());
 		});
 	}
+
+	// ─────────────────────────────────────────────────────────────
+	//  Argument helpers
+	// ─────────────────────────────────────────────────────────────
 
 	static inline function requireArgs(fn:String, args:Array<Value>, min:Int):Void {
 		if (args.length < min)
