@@ -1,0 +1,11 @@
+{
+	"name": "dscript",
+	"url": "https://github.com/BrenninhoTeam/DScript",
+	"license": "Apache",
+	"tags": ["scripting", "language", "interpreter", "cross-platform"],
+	"description": "A fast, expressive scripting language built on top of Haxe.",
+	"version": "0.1.0",
+	"releasenote": "Initial release.",
+	"contributors": ["BrenninhoTeam"],
+	"dependencies": {}
+}
